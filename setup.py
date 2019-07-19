@@ -10,6 +10,7 @@ setup(name='ljplot',
       packages=['ljplot'],
       install_requires=[
           'pandas',
-          'seaborn'
+          'seaborn',
+          'Jinja2'
       ],
       zip_safe=False)

@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from IPython.display import display, HTML
 
 
-def hbar(data, xcol, ycol, title=None, text_format="{:.1%}", fig_size=8.0):
+def hbar(data, xcol, ycol, title=None, text_format="{:.1%}", fig_size=8.0,
+        bar_color="#4f4f4f"):
 
     if title:
         display(HTML("<h2 style='width:100%; text-align: center; padding: 20px; color: #3f3f3f'>" + title + "</h2>"))
@@ -29,7 +30,7 @@ def hbar(data, xcol, ycol, title=None, text_format="{:.1%}", fig_size=8.0):
     # Plot the total crashes
     sns.set_color_codes("pastel")
     sns.barplot(x=xcol, y=ycol, data=data,
-                label="", color="#4f4f4f")
+                label="", color=bar_color)
 
 
     # Add a legend and informative axis label
