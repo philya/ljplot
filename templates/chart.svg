@@ -7,13 +7,36 @@
 
 
     rect.bar {
-      fill: url(#gradient_green_green);
-      opacity: .4;
+      fill: url(#gradient_red_green);
+      opacity: .5;
     }
 
     rect.bar:Hover {
-      opacity: .5;
+      opacity: .6;
     }
+
+    text.label {
+      text-anchor: end;
+    }
+
+    text.value_label, text.place_label {
+      text-anchor: start;
+    }
+
+    text.label, text.value_label, text.place_label  {
+      alignment-baseline: central;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      fill: #111;
+      font-size: 16px;
+    }
+
+    text.place_label {
+      fill: #fff;
+      font-weight: 400;
+    }
+
+
 
     
 
@@ -60,8 +83,8 @@
   </style>
   
     <linearGradient id="gradient_red_green" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="red"/>
-      <stop offset="100%" stop-color="green"/>
+      <stop offset="0%"   stop-color="#ffa323"/>
+      <stop offset="100%" stop-color="#004a2f"/>
     </linearGradient>
 
 
