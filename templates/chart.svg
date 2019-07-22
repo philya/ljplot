@@ -7,12 +7,12 @@
 
 
     rect.bar {
-      fill: url(#gradient_red_green);
-      opacity: .5;
+      fill: url(#gradient_one);
+      opacity: 1;
     }
 
     rect.bar:Hover {
-      opacity: .6;
+      opacity: .55;
     }
 
     text.label {
@@ -28,7 +28,7 @@
       font-family: 'Open Sans', sans-serif;
       font-weight: 300;
       fill: #111;
-      font-size: 16px;
+      font-size: 18px;
     }
 
     text.place_label {
@@ -37,60 +37,43 @@
     }
 
 
+    text.title {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      fill: #111;
+      font-size: 22px;
+      text-anchor: start;
+    }
 
-    
+    text.subtitle {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      fill: #111;
+      font-size: 18px;
+      text-anchor: start;
+    }
 
-  text.source {
-    text-anchor: end;
-  }
-  
-  text.target {
-    text-anchor: start;
-  }
+    text.signature {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      fill: #111;
 
-
-  text.source, text.target {
-    alignment-baseline: middle;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300;
-    fill: #111;
-    font-size: 14px;
-    
-  }
-
-  text.logo {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300;
-    fill: #111;
-
-    text-anchor: end;
-    alignment-baseline: top;
-    font-size: 14px;
-  }
-
-
-  text.target_year {
-    text-anchor: end;
-  }
-  
-  text.target_year, text.source_year {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300;
-    fill: #333;
-    font-size: 30px;
-  }
+      text-anchor: start;
+      alignment-baseline: top;
+      font-size: 18px;
+    }
 
   </style>
   
     <linearGradient id="gradient_red_green" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="#ffa323"/>
-      <stop offset="100%" stop-color="#004a2f"/>
+      <stop offset="10%"   stop-color="#f9989f"/>
+      <stop offset="80%" stop-color="green"/>
     </linearGradient>
 
 
-    <linearGradient id="gradient_green_green" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="#089000"/>
-      <stop offset="100%" stop-color="#063b00"/>
+    <linearGradient id="gradient_one" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#ff8b6a" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#ff8b6a"/>
     </linearGradient>
 
 

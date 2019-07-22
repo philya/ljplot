@@ -12,11 +12,14 @@ def hbar(labels, values, color="#252525",
         chart_height=None,
         bar_height=30,
         margin=50,
-        title_height=100,
-        footer_height=50,
+        title_height=32,
+        footer_height=30,
         item_padding=10,
-        label_col_width=200,
-        value_format="{:g}"
+        label_col_width=160,
+        value_col_width=40,
+        value_format="{:g}",
+        signature="Philip Olenyk for Prophy.Science © 2019",
+        title="Researchers per 100k Population"
     ):
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
@@ -29,7 +32,7 @@ def hbar(labels, values, color="#252525",
 
 
     bar_left_x = margin + label_col_width
-    bar_right_x = chart_width - margin
+    bar_right_x = chart_width - margin - value_col_width
 
     bar_100 = bar_right_x - bar_left_x
 
@@ -50,6 +53,14 @@ def hbar(labels, values, color="#252525",
         elements.append(svg_text(bar_left_x + bar_width + item_padding, y_position + bar_height * .5, "value_label", value_format.format(values[i])))
 
         elements.append(svg_text(bar_left_x + item_padding, y_position + bar_height * .5, "place_label", "{:g}".format(i + 1)))
+
+
+    elements.append(svg_text(bar_left_x, chart_height - margin, 'signature', signature))
+
+    elements.append(svg_text(bar_left_x, margin, 'title', title))
+
+    #elements.append(svg_text(bar_left_x, margin + margin , 'subtitle', subtitle))
+
 
 
     return template.render(width=chart_width, height=chart_height, elements=elements)
