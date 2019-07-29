@@ -7,6 +7,57 @@ def svg_rect(x, y, width, height, clss):
 def svg_text(x, y, clss, text):
     return '<text x="{}" y="{}" class="{}">{}</text>'.format(x, y, clss, text)
 
+def svg_polygon(points, fill, stroke, clss):
+
+    return '<polygon points="{}" fill="{}" stroke="{}" class="{}"/>'.format(
+        ' '.join(['{},{}'.format(*p) for p in points]),
+        fill,
+        stroke,
+        clss
+    )
+
+def venn_trend(labels, a, b, ab,
+        a_color = "#00a86d",
+        b_color = "#4472c4", 
+        chart_width=800,
+        chart_height=600,
+        margin=50,
+        title_height=32,
+        footer_height=30,
+        label_height=60,
+        value_format="{:g}",
+        signature="",
+        title=""
+    ):
+    #env = Environment(loader=PackageLoader('ljplot', 'templates'))
+    env = Environment(loader=FileSystemLoader('/Users/chilemba/projects/ljplot/templates'))
+    template = env.get_template('venn_trend.svg')
+
+    left = margin
+    right = chart_width - margin
+    top = margin + title_height
+    bottom = chart_height - footer_height - label_height - margin
+
+    bar_100 = bottom - top
+
+    step_width = (right - left) / (len(labels) - 1)
+
+    top_polygon = [(right, top), (left, top)]
+    bottom_polygon = [(right, bottom), (left, bottom)]
+    elements = []
+
+    for i, label in enumerate(labels):
+        step_total = a[i] + b[i] - ab[i]
+        coeff = bar_100 / step_total
+
+        top_polygon.append((left + step_width * i, top + a[i] * coeff))
+        bottom_polygon.append((left + step_width * i, bottom - b[i] * coeff))
+
+    elements.append(svg_polygon(top_polygon, a_color, "none", ""))
+    elements.append(svg_polygon(bottom_polygon, b_color, "none", ""))
+
+    return template.render(width=chart_width, height=chart_height, elements=elements)
+
 def hbar(labels, values, color="#252525",
         chart_width=980,
         chart_height=None,
@@ -19,7 +70,7 @@ def hbar(labels, values, color="#252525",
         value_col_width=40,
         value_format="{:g}",
         signature="Philip Olenyk for Prophy.Science © 2019",
-        title="Researchers per 100k Population"
+        title="Researchers Per 100k Population"
     ):
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
