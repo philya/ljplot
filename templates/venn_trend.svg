@@ -21,7 +21,40 @@
       opacity: .55;
     }
 
-    
+
+    g.ruler {
+      opacity: 0;
+    }
+
+    g.ruler:Hover {
+      opacity: 1;
+    }
+
+    g.ruler line.ruler_line, g.ruler line.ruler_tick {
+      stroke: #fff;
+      stroke-width: 2px;
+    }
+
+    g.ruler line.area_line {
+      stroke: #333;
+      stroke-width: 70px;
+      opacity: 0;
+    }
+
+    g.ruler text.ruler_label {
+      text-anchor: start;
+      alignment-baseline: central;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      fill: #fff;
+      font-size: 18px;
+
+    }
+
+    g.ruler.left text.ruler_label {
+      text-anchor: end;
+    }
+
 
     text.xlabel {
       text-anchor: middle;

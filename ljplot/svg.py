@@ -16,6 +16,10 @@ def svg_polygon(points, fill, stroke, clss):
         clss
     )
 
+def svg_line(x1, y1, x2, y2, clss):
+    return '<line x1="{}" y1="{}" x2="{}" y2="{}" class="{}"/>'.format(x1, y1, x2, y2, clss)
+
+
 def venn_trend(labels, a, b, ab,
         a_color = "#00a86d",
         b_color = "#4472c4", 
@@ -50,13 +54,43 @@ def venn_trend(labels, a, b, ab,
         step_total = a[i] + b[i] - ab[i]
         coeff = bar_100 / step_total
 
-        top_polygon.append((left + step_width * i, top + a[i] * coeff))
-        bottom_polygon.append((left + step_width * i, bottom - b[i] * coeff))
+        step_x = left + step_width * i
 
-        elements.append(svg_text(left + step_width * i, bottom + label_height / 2.0, "xlabel", label))
+        crack_top = bottom - b[i] * coeff
+        crack_bottom = top + a[i] * coeff
 
-    elements.append(svg_polygon(top_polygon, a_color, "none", ""))
-    elements.append(svg_polygon(bottom_polygon, b_color, "none", ""))
+        top_share = (step_total - b[i]) / step_total
+        bottom_share = (step_total - a[i]) / step_total
+        crack_share = ab[i] / step_total
+
+        top_polygon.append((step_x, crack_bottom))
+        bottom_polygon.append((step_x, crack_top))
+
+        elements.append(svg_text(step_x, bottom + label_height / 2.0, "xlabel", label))
+
+        tick_half_length = 5
+        ruler_label_padding = tick_half_length * 2
+
+        if i + 1 > len(labels) / 2:
+            ruler_label_align = " left"
+            ruler_label_x = step_x - ruler_label_padding
+        else:
+            ruler_label_align = " right"
+            ruler_label_x = step_x + ruler_label_padding
+
+        elements.append("<g class='ruler" + ruler_label_align + "'>" + \
+            svg_line(step_x, top, step_x, bottom, 'area_line') + \
+            svg_line(step_x, top, step_x, bottom, 'ruler_line') + \
+            svg_line(step_x - tick_half_length, crack_top, step_x + tick_half_length, crack_top, "ruler_tick") + \
+            svg_line(step_x - tick_half_length, crack_bottom, step_x + tick_half_length, crack_bottom, "ruler_tick") + \
+            svg_text(ruler_label_x, top + (bar_100 - b[i] * coeff) / 2, "ruler_label", "{:.1%}".format(top_share)) + \
+            svg_text(ruler_label_x, bottom - (bar_100 - a[i] * coeff) / 2, "ruler_label", "{:.1%}".format(bottom_share)) + \
+            svg_text(ruler_label_x, (crack_bottom + crack_top) / 2, "ruler_label", "{:.1%}".format(crack_share)) + \
+            "</g>")
+
+
+    elements.insert(0, svg_polygon(top_polygon, a_color, "none", ""))
+    elements.insert(1, svg_polygon(bottom_polygon, b_color, "none", ""))
 
     return template.render(width=chart_width, height=chart_height, elements=elements)
 
