@@ -27,7 +27,7 @@
     }
 
     g.ruler:Hover {
-      opacity: 1;
+      opacity: .9;
     }
 
     g.ruler line.ruler_line, g.ruler line.ruler_tick {
