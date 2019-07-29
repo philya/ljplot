@@ -21,15 +21,10 @@
       opacity: .55;
     }
 
-    text.label {
-      text-anchor: end;
-    }
+    
 
-    text.value_label, text.place_label {
-      text-anchor: start;
-    }
-
-    text.label, text.value_label, text.place_label  {
+    text.xlabel {
+      text-anchor: middle;
       alignment-baseline: central;
       font-family: 'Open Sans', sans-serif;
       font-weight: 300;
@@ -37,10 +32,6 @@
       font-size: 18px;
     }
 
-    text.place_label {
-      fill: #fff;
-      font-weight: 400;
-    }
 
 
     text.title {

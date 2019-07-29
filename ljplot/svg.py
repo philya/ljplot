@@ -53,6 +53,8 @@ def venn_trend(labels, a, b, ab,
         top_polygon.append((left + step_width * i, top + a[i] * coeff))
         bottom_polygon.append((left + step_width * i, bottom - b[i] * coeff))
 
+        elements.append(svg_text(left + step_width * i, bottom + label_height / 2.0, "xlabel", label))
+
     elements.append(svg_polygon(top_polygon, a_color, "none", ""))
     elements.append(svg_polygon(bottom_polygon, b_color, "none", ""))
 
