@@ -25,13 +25,14 @@ def venn_trend(labels, a, b, ab,
         b_color = "#4472c4", 
         chart_width=800,
         chart_height=600,
-        margin=50,
+        margin=60,
         title_height=32,
         footer_height=30,
         label_height=60,
         value_format="{:g}",
         signature="",
-        title=""
+        title="",
+        ruler_label_always_in=False,
     ):
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
     env = Environment(loader=FileSystemLoader('/Users/chilemba/projects/ljplot/templates'))
@@ -71,7 +72,7 @@ def venn_trend(labels, a, b, ab,
         tick_half_length = 5
         ruler_label_padding = tick_half_length * 2
 
-        if i + 1 > len(labels) / 2:
+        if (i + 1 > len(labels) / 2) and ruler_label_always_in:
             ruler_label_align = " left"
             ruler_label_x = step_x - ruler_label_padding
         else:
@@ -79,7 +80,7 @@ def venn_trend(labels, a, b, ab,
             ruler_label_x = step_x + ruler_label_padding
 
         elements.append("<g class='ruler" + ruler_label_align + "'>" + \
-            svg_line(step_x, top, step_x, bottom, 'area_line') + \
+            svg_line(step_x, top, step_x, bottom + label_height, 'area_line') + \
             svg_line(step_x, top, step_x, bottom, 'ruler_line') + \
             svg_line(step_x - tick_half_length, crack_top, step_x + tick_half_length, crack_top, "ruler_tick") + \
             svg_line(step_x - tick_half_length, crack_bottom, step_x + tick_half_length, crack_bottom, "ruler_tick") + \
