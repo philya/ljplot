@@ -106,8 +106,12 @@ def hbar(labels, values, color="#252525",
         label_col_width=160,
         value_col_width=40,
         value_format="{:g}",
-        signature="Philip Olenyk for Prophy.Science © 2019",
-        title="Researchers Per 100k Population"
+        display_position=True,
+        signature="",
+        title="",
+        subtitle="",
+        bar_opacity=.9,
+        colors={'bar': '#ff8b6a', 'negative': "#4281A4"},
     ):
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
@@ -119,39 +123,69 @@ def hbar(labels, values, color="#252525",
         chart_height = len(values) * (item_padding + bar_height) + margin * 2.0 + title_height + footer_height
 
 
+    max_value = max(values)
+    min_value = min(values)
+    if min_value > 0:
+        min_value = 0
+
+
     bar_left_x = margin + label_col_width
+    if min_value < 0:
+        bar_left_x += value_col_width
+
     bar_right_x = chart_width - margin - value_col_width
 
     bar_100 = bar_right_x - bar_left_x
 
-    max_value = max(values)
+    
+    value_diff = max_value - min_value
+    zero_x = (abs(min_value) / value_diff) * bar_100 + bar_left_x
 
+    if min_value < 0:
+        label_x = bar_left_x - item_padding - value_col_width
+    else:
+        label_x = bar_left_x - item_padding
+
+    #label_x = zero_x - item_padding
 
     elements = []
     for i, label in enumerate(labels):
         #print(label, values[i])
         y_position = margin + title_height + i * (bar_height + item_padding)
 
-        bar_width = bar_100 * values[i] / max_value
-        elements.append(svg_rect(bar_left_x, y_position,  bar_width, bar_height, "bar"))
+        bar_width = bar_100 * values[i] / value_diff
+        if bar_width > 0: 
+            elements.append(svg_rect(zero_x, y_position,  bar_width, bar_height, "bar"))
+        else: 
+            elements.append(svg_rect(zero_x + bar_width, y_position, abs(bar_width), bar_height, "bar negative"))
 
 
-        elements.append(svg_text(bar_left_x - item_padding, y_position + bar_height * 0.5, "label", label))
+        elements.append(svg_text(label_x, y_position + bar_height * 0.5, "label", label))
 
-        elements.append(svg_text(bar_left_x + bar_width + item_padding, y_position + bar_height * .5, "value_label", value_format.format(values[i])))
+        if bar_width > 0:
+            value_label_x = zero_x + bar_width + item_padding
+            value_label_class = "value_label right"
+        else:
+            value_label_x = zero_x + bar_width - item_padding
+            value_label_class = "value_label left"
 
-        elements.append(svg_text(bar_left_x + item_padding, y_position + bar_height * .5, "place_label", "{:g}".format(i + 1)))
+
+        elements.append(svg_text(value_label_x, y_position + bar_height * .5, value_label_class, value_format.format(values[i])))
+
+        if display_position:
+            elements.append(svg_text(bar_left_x + item_padding, y_position + bar_height * .5, "place_label", "{:g}".format(i + 1)))
 
 
     elements.append(svg_text(bar_left_x, chart_height - margin, 'signature', signature))
 
     elements.append(svg_text(bar_left_x, margin, 'title', title))
+    elements.append(svg_text(bar_left_x, title_height, 'subtitle', subtitle))
 
     #elements.append(svg_text(bar_left_x, margin + margin , 'subtitle', subtitle))
 
 
 
-    return template.render(width=chart_width, height=chart_height, elements=elements)
+    return template.render(bar_opacity=bar_opacity, colors=colors, width=chart_width, height=chart_height, elements=elements)
 
 
 

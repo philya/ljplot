@@ -3,13 +3,19 @@
   <style type='text/css'>
     
     
-    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400');
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400|Roboto:400');
 
 
     rect.bar {
-      fill: url(#gradient_one);
-      opacity: 1;
+      fill: url(#gradient_bar);
+      opacity: {{ bar_opacity }};
     }
+
+    rect.negative {
+      fill: url(#gradient_negative);
+      opacity: {{ bar_opacity }};
+    }
+
 
     rect.bar:Hover {
       opacity: .55;
@@ -19,9 +25,18 @@
       text-anchor: end;
     }
 
-    text.value_label, text.place_label {
+    text.place_label {
       text-anchor: start;
     }
+
+    text.value_label.right {
+      text-anchor: start;
+    }
+
+    text.value_label.left {
+      text-anchor: end;
+    }
+
 
     text.label, text.value_label, text.place_label  {
       alignment-baseline: central;
@@ -38,7 +53,7 @@
 
 
     text.title {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Roboto', sans-serif;
       font-weight: 400;
       fill: #111;
       font-size: 32px;
@@ -65,15 +80,15 @@
 
   </style>
   
-    <linearGradient id="gradient_red_green" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
-      <stop offset="10%"   stop-color="#f9989f"/>
-      <stop offset="80%" stop-color="green"/>
+    <linearGradient id="gradient_negative" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="{{ colors.negative }}"  />
+      <stop offset="100%" stop-color="{{ colors.negative }}"  stop-opacity=".5"/>
     </linearGradient>
 
 
-    <linearGradient id="gradient_one" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="#ff8b6a" stop-opacity=".5"/>
-      <stop offset="100%" stop-color="#ff8b6a"/>
+    <linearGradient id="gradient_bar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="{{ colors.bar }}" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="{{ colors.bar }}"/>
     </linearGradient>
 
 
