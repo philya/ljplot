@@ -19,6 +19,9 @@ def svg_polygon(points, fill, stroke, clss):
 def svg_line(x1, y1, x2, y2, clss):
     return '<line x1="{}" y1="{}" x2="{}" y2="{}" class="{}"/>'.format(x1, y1, x2, y2, clss)
 
+def safe_svg_str(s):
+    return s.replace('&', '&amp;')
+
 
 def venn_trend(labels, a, b, ab,
         a_color = "#00a86d",
@@ -112,6 +115,13 @@ def hbar(labels, values, color="#252525",
         subtitle="",
         bar_opacity=.9,
         colors={'bar': '#ff8b6a', 'negative': "#4281A4"},
+        logo_url=None,
+        logo_height=70,
+        logo_width=70,
+        center_zero=False,
+        omit_value_sign=False,
+        positive_label="",
+        negative_label="",
     ):
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
@@ -125,6 +135,7 @@ def hbar(labels, values, color="#252525",
 
     max_value = max(values)
     min_value = min(values)
+    max_abs = max([abs(v) for v in values])
     if min_value > 0:
         min_value = 0
 
@@ -139,7 +150,10 @@ def hbar(labels, values, color="#252525",
 
     
     value_diff = max_value - min_value
-    zero_x = (abs(min_value) / value_diff) * bar_100 + bar_left_x
+    if center_zero:
+        zero_x = bar_left_x + bar_100 / 2
+    else:
+        zero_x = (abs(min_value) / value_diff) * bar_100 + bar_left_x
 
     if min_value < 0:
         label_x = bar_left_x - item_padding - value_col_width
@@ -153,14 +167,18 @@ def hbar(labels, values, color="#252525",
         #print(label, values[i])
         y_position = margin + title_height + i * (bar_height + item_padding)
 
-        bar_width = bar_100 * values[i] / value_diff
+        if center_zero:
+            bar_width = (bar_100 / 2) * (values[i] / max_abs)
+        else:
+            bar_width = bar_100 * values[i] / value_diff
+
         if bar_width > 0: 
             elements.append(svg_rect(zero_x, y_position,  bar_width, bar_height, "bar"))
         else: 
             elements.append(svg_rect(zero_x + bar_width, y_position, abs(bar_width), bar_height, "bar negative"))
 
 
-        elements.append(svg_text(label_x, y_position + bar_height * 0.5, "label", label))
+        elements.append(svg_text(label_x, y_position + bar_height * 0.5, "label", safe_svg_str(label)))
 
         if bar_width > 0:
             value_label_x = zero_x + bar_width + item_padding
@@ -169,8 +187,11 @@ def hbar(labels, values, color="#252525",
             value_label_x = zero_x + bar_width - item_padding
             value_label_class = "value_label left"
 
-
-        elements.append(svg_text(value_label_x, y_position + bar_height * .5, value_label_class, value_format.format(values[i])))
+        if omit_value_sign:
+            value = abs(values[i])
+        else:
+            value = values[i]
+        elements.append(svg_text(value_label_x, y_position + bar_height * .5, value_label_class, value_format.format(value)))
 
         if display_position:
             elements.append(svg_text(bar_left_x + item_padding, y_position + bar_height * .5, "place_label", "{:g}".format(i + 1)))
@@ -181,8 +202,11 @@ def hbar(labels, values, color="#252525",
     elements.append(svg_text(bar_left_x, margin, 'title', title))
     elements.append(svg_text(bar_left_x, title_height, 'subtitle', subtitle))
 
-    #elements.append(svg_text(bar_left_x, margin + margin , 'subtitle', subtitle))
+    elements.append(svg_text(bar_left_x + bar_100 / 4, title_height + margin / 2, 'direction_label left', negative_label))
+    elements.append(svg_text(bar_right_x - bar_100 / 4, title_height + margin / 2, 'direction_label right', positive_label))
 
+    if logo_url:
+        elements.append("<image xlink:href='{src}' height='{lh}' width='{lw}' x='{x}' y='{y}' />".format(lh=logo_height, lw=logo_width, src=logo_url, x=chart_width - logo_width - margin, y=chart_height - logo_height - margin))
 
 
     return template.render(bar_opacity=bar_opacity, colors=colors, width=chart_width, height=chart_height, elements=elements)
