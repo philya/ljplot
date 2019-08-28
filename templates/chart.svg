@@ -40,8 +40,13 @@
 
     text.label, text.value_label, text.place_label  {
       alignment-baseline: central;
+      /*
       font-family: 'Open Sans', sans-serif;
       font-weight: 300;
+      */
+      font-family: 'Gotham', sans-serif;
+      font-weight: normal;
+      
       fill: #111;
       font-size: 18px;
     }
@@ -53,7 +58,8 @@
 
 
     text.title {
-      font-family: 'Roboto', sans-serif;
+      /*font-family: 'Roboto', sans-serif;*/
+      font-family: 'The Bold Font', sans-serif;
       font-weight: 400;
       fill: #111;
       font-size: 32px;
@@ -61,16 +67,26 @@
     }
 
     text.subtitle {
+      /*
       font-family: 'Open Sans', sans-serif;
       font-weight: 300;
+      */
+
+      font-family: 'Gotham', sans-serif;
+      font-weight: bold;
+
       fill: #111;
       font-size: 18px;
       text-anchor: start;
     }
 
     text.direction_label {
+      /*
       font-family: 'Open Sans', sans-serif;
       font-weight: 400;
+      */
+      font-family: 'Gotham', sans-serif;
+      font-weight: bold;
       fill: #111;
       font-size: 18px;
       text-anchor: middle;    
@@ -78,8 +94,13 @@
     }
 
     text.signature {
+      /*
       font-family: 'Open Sans', sans-serif;
       font-weight: 300;
+      */
+      font-family: 'Gotham', sans-serif;
+      font-weight: normal;
+
       fill: #111;
 
       text-anchor: start;
