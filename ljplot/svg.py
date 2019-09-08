@@ -214,6 +214,168 @@ def hbar(labels, values, color="#252525",
 
 
     
+def hbar_stacked(df,
+        chart_width=980,
+        chart_height=None,
+        bar_height=30,
+        margin=50,
+        title_height=32,
+        footer_height=30,
+        item_padding=10,
+        label_col_width=160,
+        value_col_width=40,
+        value_format="{:g}",
+        display_position=True,
+        signature="",
+        title="",
+        subtitle="",
+        bar_opacity=.9,
+        colors={'bar': '#ff8b6a', 'negative': "#4281A4"},
+        logo_url=None,
+        logo_height=70,
+        logo_width=70,
+        center_zero=False,
+        omit_value_sign=False,
+        positive_label="",
+        negative_label="",
+        logo_x=None,
+        logo_y=None,
+        max_values=None,
+        min_values=None,
+        line_width=0,
+        value_label_always_right=False,
+    ):
+
+    labels = list(df.iloc[:, 0])
+    
+
+    #env = Environment(loader=PackageLoader('ljplot', 'templates'))
+    env = Environment(loader=FileSystemLoader('/Users/chilemba/projects/ljplot/templates'))
+
+    template = env.get_template('chart.svg')
+
+    if chart_height is None:
+        chart_height = len(labels) * (item_padding + bar_height) + margin * 2.0 + title_height + footer_height
+
+    elements = []
+
+    columns = len(df.columns[1:])
+
+    bar_window_left = margin + label_col_width
+    bar_window_right = chart_width - margin
+    bar_window_width = bar_window_right - bar_window_left
+    bar_column_width = bar_window_width / columns
+
+    label_x = bar_window_left - item_padding * 2
+
+    def get_y_position(i):
+        return margin + title_height + i * (bar_height + item_padding)
+
+    for i, label in enumerate(labels):
+        y_position = get_y_position(i)
+        elements.append(svg_text(label_x, y_position + bar_height * 0.5, "label", safe_svg_str(label)))
+        elements.append("<line x1='{}' y1='{}' x2='{}' y2='{}' stroke-width='{}' class='ruler_line'/>".format(bar_window_left, y_position + bar_height * 0.5, bar_window_right, y_position + bar_height * 0.5, line_width))
+
+
+
+    for coli, column_name in enumerate(list(df.columns[1:])):
+
+        values = list(df.iloc[:, coli + 1])
+
+        if max_values and max_values[coli]:
+            max_value = max_values[coli]
+        else:
+            max_value = max(values)
+
+        if min_values and min_values[coli]:
+            min_value = min_values[coli]
+        else:
+            min_value = min(values)
+
+        #max_abs = max([abs(v) for v in values])
+        max_abs = max([abs(min_value), abs(max_value)])
+        if min_value > 0:
+            min_value = 0
+
+
+        bar_left_x = bar_window_left + coli * bar_column_width
+        if min_value < 0 and not value_label_always_right:
+            bar_left_x += value_col_width
+
+        bar_right_x = bar_window_left + (coli + 1) * bar_column_width - value_col_width
+
+        bar_100 = bar_right_x - bar_left_x
+
+        
+        value_diff = max_value - min_value
+        if center_zero and (min_value < 0):
+            zero_x = bar_left_x + bar_100 / 2
+        else:
+            zero_x = (abs(min_value) / value_diff) * bar_100 + bar_left_x
+
+        #if min_value < 0:
+        #    label_x = bar_left_x - item_padding - value_col_width
+        #else:
+        #    label_x = bar_left_x - item_padding
+
+        #label_x = zero_x - item_padding
+
+        elements.append(svg_text(bar_left_x + bar_100 / 2, title_height + margin / 4, 'column_label', column_name))
+
+        
+        for i, label in enumerate(labels):
+            #print(label, values[i])
+            y_position = get_y_position(i)
+
+            if center_zero and (min_value < 0):
+                bar_width = (bar_100 / 2) * (values[i] / max_abs)
+            else:
+                bar_width = bar_100 * values[i] / value_diff
+
+            if bar_width > 0: 
+                elements.append(svg_rect(zero_x, y_position,  bar_width, bar_height, "bar"))
+            else: 
+                elements.append(svg_rect(zero_x + bar_width, y_position, abs(bar_width), bar_height, "bar negative"))
+
+
+            if bar_width > 0:
+                value_label_x = zero_x + bar_width + item_padding
+                value_label_class = "value_label right"
+            else:
+                if value_label_always_right:
+                    value_label_x = zero_x + item_padding
+                    value_label_class = "value_label right"
+                else:
+                    value_label_x = zero_x + bar_width - item_padding
+                    value_label_class = "value_label left"
+
+            if omit_value_sign:
+                value = abs(values[i])
+            else:
+                value = values[i]
+            elements.append(svg_text(value_label_x, y_position + bar_height * .5, value_label_class, value_format.format(value)))
+
+            if display_position:
+                elements.append(svg_text(bar_left_x + item_padding, y_position + bar_height * .5, "place_label", "{:g}".format(i + 1)))
+
+
+
+
+    elements.append(svg_text(bar_window_left, chart_height - margin, 'signature', signature))
+
+    elements.append(svg_text(bar_window_left, margin, 'title', title))
+    elements.append(svg_text(bar_window_left, title_height, 'subtitle', subtitle))
+
+    #elements.append(svg_text(bar_window_left + bar_100 / 4, title_height + margin / 2, 'direction_label left', negative_label))
+    #elements.append(svg_text(bar_window_right - bar_100 / 4, title_height + margin / 2, 'direction_label right', positive_label))
+
+
+
+    if logo_url:
+        elements.append("<image xlink:href='{src}' height='{lh}' width='{lw}' x='{x}' y='{y}' />".format(lh=logo_height, lw=logo_width, src=logo_url, x=chart_width - logo_width - margin, y=chart_height - logo_height - margin))
+
+
+    return template.render(bar_opacity=bar_opacity, colors=colors, width=chart_width, height=chart_height, elements=elements)
 
 
     

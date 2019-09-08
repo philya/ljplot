@@ -80,7 +80,7 @@
       text-anchor: start;
     }
 
-    text.direction_label {
+    text.direction_label, text.column_label {
       /*
       font-family: 'Open Sans', sans-serif;
       font-weight: 400;
@@ -91,6 +91,11 @@
       font-size: 18px;
       text-anchor: middle;    
       alignment-baseline: top;
+    }
+
+    line.ruler_line {
+      stroke: #f9f9f9;
+      stroke-width: 30;
     }
 
     text.signature {
