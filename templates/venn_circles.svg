@@ -37,43 +37,13 @@
 
   </defs>
   
-  <!--animate 
-           xlink:href="#circle1"
-           attributeName="r"
-           from="50"
-           to="100" 
-           dur="5s"
-           begin="0s"
-           repeatCount="2"
-           fill="freeze" 
-           id="circ-anim"/>
-
-    <animate 
-           xlink:href="#circle2"
-           attributeName="r"
-           from="50"
-           to="80" 
-           dur="5s"
-           begin="0s"
-           repeatCount="2"
-           fill="freeze" 
-           id="circ-anim"/>
-  
-      <animate 
-           xlink:href="#circle2"
-           attributeName="cx"
-           from=""
-           to="220" 
-           dur="5s"
-           begin="2s"
-           repeatCount="20"
-           fill="freeze" 
-           id="circ-anim"/-->
 
   
   <circle cx="{{ ax }}" cy="{{ cy }}" r="{{ ar }}" id="circle1" class="circle1"/>
   
   <circle cx="{{ bx }}" cy="{{ cy }}" r="{{ br }}" id="circle2" class="circle2"/>
+
+  <polygon points="{{ tpx1 }} {{tpy1}} {{tpx2}} {{tpy2}} {{tpx3}} {{tpy3}}" class="timline_pointer"/>
 
     {% for e in elements %}
       {{ e }}

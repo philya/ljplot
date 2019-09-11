@@ -19,18 +19,37 @@ def svg_animate(**kwargs):
            fill="freeze" 
            id="{aid}"/>""".format(**kwargs)
 
+def svg_animate_transform(**kwargs):
+    return """
+        <animateTransform
+           xlink:href="#{oid}"
+           attributeName="transform"
+           type="{ttype}"
+           from="{fr}"
+           to="{to}" 
+           dur="{dur}s"
+           begin="{begin}s"
+           repeatCount="1"
+           fill="freeze" 
+           id="{aid}"/>""".format(**kwargs)
+
 def svg_text(**kwargs):
     return '<text x="{x}" y="{y}" class="{clss}">{text}</text>'.format(**kwargs)
 
 def svg_line(**kwargs):
-    return '<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" class="{clss}"/>'.format(**kwargs)
+    return '<line id="{oid}" x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" class="{clss}"/>'.format(**kwargs)
 
-def svg_tick(x, y, h=5, clss="timeline_tick"):
+def svg_tick(x, y, h=5, clss="timeline_tick", oid=""):
     return svg_line(
         x1=x, x2=x,
         y1=y, y2=y + h,
-        clss=clss
+        clss=clss,
+        oid=oid,
         )
+
+def svg_group(id, transform, content):
+    return '<g id="{}" transform="{}">{}</g>'.format(id, transform, content)
+
 
 
 def svg_venn_circles_animation(df,
@@ -82,6 +101,18 @@ def svg_venn_circles_animation(df,
             h=20
         ))
 
+#            x=xo + tl_step_width * .5,
+#            y=tl_y + 35,
+
+
+    elements.append(svg_group("timeline_pointer", 
+        "translate({} {})".format(xo + tl_step_width * .5, tl_y + 35), 
+        svg_tick(
+            x=0,
+            y=0,
+            h=20,
+        )))
+
     elements.append(svg_tick(
             x=chart_width - margin,
             y=tl_y + 10,
@@ -108,6 +139,16 @@ def svg_venn_circles_animation(df,
         timing = dict(
             dur=step_duration,
             begin=(i - 1) * step_duration)
+
+
+        elements.append(svg_animate_transform(
+            aid="anim_tlp_{}".format(i),
+            oid="timeline_pointer",
+            ttype="translate",
+            fr="{} {}".format(xo + tl_step_width * (i - .5), tl_y + 35),
+            to="{} {}".format(xo + tl_step_width * (i + .5), tl_y + 35),
+            **timing
+        ))
 
         
         elements.append(svg_animate(
