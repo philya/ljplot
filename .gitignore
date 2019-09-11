@@ -2,3 +2,6 @@ __pycache__
 ljplot.egg-info
 ljplot.sublime-project
 ljplot.sublime-workspace
+.ipynb_checkpoints
+env
+envljplot
