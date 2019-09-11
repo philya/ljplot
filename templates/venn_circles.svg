@@ -11,6 +11,16 @@
       opacity: 1;
     }
 
+    text.timeline_label {
+      text-anchor: middle;
+    }
+
+    line.timeline_tick {
+      stroke: #000;
+      stroke-width: 1px;
+    }
+
+
     
   </style>
   
@@ -60,8 +70,6 @@
            fill="freeze" 
            id="circ-anim"/-->
 
-
-  <text x='50' y='50'>{{ label}}</text>
   
   <circle cx="{{ ax }}" cy="{{ cy }}" r="{{ ar }}" id="circle1" class="circle1"/>
   

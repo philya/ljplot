@@ -19,6 +19,20 @@ def svg_animate(**kwargs):
            fill="freeze" 
            id="{aid}"/>""".format(**kwargs)
 
+def svg_text(**kwargs):
+    return '<text x="{x}" y="{y}" class="{clss}">{text}</text>'.format(**kwargs)
+
+def svg_line(**kwargs):
+    return '<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" class="{clss}"/>'.format(**kwargs)
+
+def svg_tick(x, y, h=5, clss="timeline_tick"):
+    return svg_line(
+        x1=x, x2=x,
+        y1=y, y2=y + h,
+        clss=clss
+        )
+
+
 def svg_venn_circles_animation(df,
         chart_width=800,
         margin=50,
@@ -56,14 +70,45 @@ def svg_venn_circles_animation(df,
     df = df.assign(ax = list(map(lambda x: (content_area_width - x) / 2, df.distance)))
     df = df.assign(bx = list(map(lambda x: (content_area_width + x) / 2, df.distance)))
 
+    # time line y
+    tl_y = title_height + timeline_height / 3
+    tl_step_width = content_area_width / len(df.index)
 
     elements = []
+
+    elements.append(svg_tick(
+            x=margin,
+            y=tl_y + 10,
+            h=20
+        ))
+
+    elements.append(svg_tick(
+            x=chart_width - margin,
+            y=tl_y + 10,
+            h=20
+        ))
+
+    for i in range(0, len(df.index)):
+        tick_x = xo + tl_step_width * (i + .5)
+
+        elements.append(svg_tick(
+            x=tick_x,
+            y=tl_y + 10
+        ))
+
+        elements.append(svg_text(
+            y=tl_y, 
+            x=tick_x, 
+            clss="timeline_label",
+            text=df.iloc[i].label))
+
     
     for i in range(1, len(df.index)):
         
         timing = dict(
             dur=step_duration,
             begin=(i - 1) * step_duration)
+
         
         elements.append(svg_animate(
             aid="anim_ar_{}".format(i),
