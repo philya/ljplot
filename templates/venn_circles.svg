@@ -1,0 +1,76 @@
+<svg height="{{ chart_height }}" width="{{ chart_width }}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+  <style type='text/css'>
+    circle.circle1 {
+      fill: url(#gradient_one_red);
+      opacity: 1;
+    }
+
+    circle.circle2 {
+      fill: url(#gradient_one_green);
+      opacity: 1;
+    }
+
+    
+  </style>
+  
+    <linearGradient id="gradient_one_red" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#ff8b6a" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#ff8b6a"/>
+    </linearGradient>
+
+      <linearGradient id="gradient_one_green" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#1fab89" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#1fab89"/>
+    </linearGradient>
+
+
+  </defs>
+  
+  <!--animate 
+           xlink:href="#circle1"
+           attributeName="r"
+           from="50"
+           to="100" 
+           dur="5s"
+           begin="0s"
+           repeatCount="2"
+           fill="freeze" 
+           id="circ-anim"/>
+
+    <animate 
+           xlink:href="#circle2"
+           attributeName="r"
+           from="50"
+           to="80" 
+           dur="5s"
+           begin="0s"
+           repeatCount="2"
+           fill="freeze" 
+           id="circ-anim"/>
+  
+      <animate 
+           xlink:href="#circle2"
+           attributeName="cx"
+           from=""
+           to="220" 
+           dur="5s"
+           begin="2s"
+           repeatCount="20"
+           fill="freeze" 
+           id="circ-anim"/-->
+
+
+  <text x='50' y='50'>{{ label}}</text>
+  
+  <circle cx="{{ ax }}" cy="{{ cy }}" r="{{ ar }}" id="circle1" class="circle1"/>
+  
+  <circle cx="{{ bx }}" cy="{{ cy }}" r="{{ br }}" id="circle2" class="circle2"/>
+
+    {% for e in elements %}
+      {{ e }}
+    {% endfor %}
+
+
+
+</svg>

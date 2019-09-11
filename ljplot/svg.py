@@ -125,7 +125,7 @@ def hbar(labels, values, color="#252525",
     ):
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
-    env = Environment(loader=FileSystemLoader('/Users/chilemba/projects/ljplot/templates'))
+    env = Environment(loader=FileSystemLoader('templates'))
 
     template = env.get_template('chart.svg')
 
@@ -250,7 +250,7 @@ def hbar_stacked(df,
     
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
-    env = Environment(loader=FileSystemLoader('/Users/chilemba/projects/ljplot/templates'))
+    env = Environment(loader=FileSystemLoader('templates'))
 
     template = env.get_template('chart.svg')
 
