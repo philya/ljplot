@@ -3,6 +3,8 @@ from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoesca
 
 from ljplot.svg import svg_text, svg_line, svg_polygon
 
+from millify import millify
+
 def area_one_chart(labels, values,
         color = "#00a86d",
         chart_width=800,
@@ -15,6 +17,7 @@ def area_one_chart(labels, values,
         signature="",
         title="",
         ruler_label_always_in=False,
+        value_marks=[]
     ):
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
@@ -46,6 +49,16 @@ def area_one_chart(labels, values,
         area_polygon.append((step_x, edge))
 
         elements.append(svg_text(step_x, bottom + label_height / 2.0, "xlabel", label))
+
+        if label in value_marks:
+            elements.append(svg_line(step_x, bottom, step_x, edge, 'ruler_line'))
+            elements.append("<circle cx='{}' cy='{}' r='3' class='ruler_dot'/>".format(
+                step_x,
+                edge
+            ))
+
+            elements.append(svg_text(step_x, edge - 10, "ruler_label", millify(values[i], precision=1)))
+
 
         """
         tick_half_length = 5
