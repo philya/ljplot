@@ -1,7 +1,7 @@
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
-from ljplot.svg import svg_text, svg_line, svg_polygon
+from ljplot.svg import svg_text, svg_line, svg_polygon, svg_text
 
 from millify import millify
 
@@ -24,6 +24,7 @@ def area_one_chart(labels, values,
         logo_url=None,
         logo_height=50,
         logo_width=50,
+        twitter="",
     ):
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
@@ -92,12 +93,29 @@ def area_one_chart(labels, values,
     elements.insert(0, svg_polygon(area_polygon, color, "none", ""))
 
 
-    elements.append(svg_text(margin, margin, 'title', title))
-    elements.append(svg_text(margin, title_height, 'subtitle', subtitle))
+    elements.append(svg_text(margin, margin + title_height, 'title', title))
+    elements.append(svg_text(margin, margin * 1.7 + title_height , 'subtitle', subtitle))
+
+    elements.append(svg_text(margin, chart_height - margin, 'signature', signature))
 
 
     if logo_url:
         elements.append("<image xlink:href='{src}' height='{lh}' width='{lw}' x='{x}' y='{y}' />".format(lh=logo_height, lw=logo_width, src=logo_url, x=chart_width - logo_width - margin, y=chart_height - logo_height - margin))
+
+    if twitter:
+        tm = margin
+        h = 22
+        elements.append(svg_text(chart_width - tm - h * 1.1, chart_height - tm, "twitter", "@" + twitter))
+        elements.append("<image xlink:href='{}' x='{}' y='{}' height='{}' class='twitter_logo'/>".format(
+            "https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg",
+            chart_width - tm - h,
+            chart_height - tm - h * .9,
+            h,
+        ))
+            # height='{lh}' width='{lw}' x='{x}' y='{y}' />".format(
+            #lh=logo_height, lw=logo_width, src=logo_url, x=chart_width - logo_width - margin, y=chart_height - logo_height - margin))
+
+
 
 
     return template.render(width=chart_width, height=chart_height, elements=elements)
