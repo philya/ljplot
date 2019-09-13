@@ -16,8 +16,14 @@ def area_one_chart(labels, values,
         value_format="{:g}",
         signature="",
         title="",
+        subtitle="",
+
         ruler_label_always_in=False,
-        value_marks=[]
+        value_marks=[],
+
+        logo_url=None,
+        logo_height=50,
+        logo_width=50,
     ):
 
     #env = Environment(loader=PackageLoader('ljplot', 'templates'))
@@ -84,5 +90,14 @@ def area_one_chart(labels, values,
 
 
     elements.insert(0, svg_polygon(area_polygon, color, "none", ""))
+
+
+    elements.append(svg_text(margin, margin, 'title', title))
+    elements.append(svg_text(margin, title_height, 'subtitle', subtitle))
+
+
+    if logo_url:
+        elements.append("<image xlink:href='{src}' height='{lh}' width='{lw}' x='{x}' y='{y}' />".format(lh=logo_height, lw=logo_width, src=logo_url, x=chart_width - logo_width - margin, y=chart_height - logo_height - margin))
+
 
     return template.render(width=chart_width, height=chart_height, elements=elements)
