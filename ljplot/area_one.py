@@ -67,29 +67,6 @@ def area_one_chart(labels, values,
             elements.append(svg_text(step_x, edge - 10, "ruler_label", millify(values[i], precision=1)))
 
 
-        """
-        tick_half_length = 5
-        ruler_label_padding = tick_half_length * 2
-
-        if (i + 1 > len(labels) / 2) and ruler_label_always_in:
-            ruler_label_align = " left"
-            ruler_label_x = step_x - ruler_label_padding
-        else:
-            ruler_label_align = " right"
-            ruler_label_x = step_x + ruler_label_padding
-
-        elements.append("<g class='ruler" + ruler_label_align + "'>" + \
-            svg_line(step_x, top, step_x, bottom + label_height, 'area_line') + \
-            svg_line(step_x, top, step_x, bottom, 'ruler_line') + \
-            svg_line(step_x - tick_half_length, crack_top, step_x + tick_half_length, crack_top, "ruler_tick") + \
-            svg_line(step_x - tick_half_length, crack_bottom, step_x + tick_half_length, crack_bottom, "ruler_tick") + \
-            svg_text(ruler_label_x, top + (bar_100 - b[i] * coeff) / 2, "ruler_label", "{:.1%}".format(top_share)) + \
-            svg_text(ruler_label_x, bottom - (bar_100 - a[i] * coeff) / 2, "ruler_label", "{:.1%}".format(bottom_share)) + \
-            svg_text(ruler_label_x, (crack_bottom + crack_top) / 2, "ruler_label", "{:.1%}".format(crack_share)) + \
-            "</g>")
-        """
-
-
     elements.insert(0, svg_polygon(area_polygon, color, "none", ""))
 
 

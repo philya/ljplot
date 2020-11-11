@@ -320,7 +320,7 @@ def hbar_stacked(df,
 
         #label_x = zero_x - item_padding
 
-        elements.append(svg_text(bar_left_x + bar_100 / 2, title_height + margin / 4, 'column_label', column_name))
+        elements.append(svg_text(bar_left_x + bar_100 / 2, title_height + margin / 4, 'column_label', safe_svg_str(column_name)))
 
         
         for i, label in enumerate(labels):
