@@ -81,6 +81,11 @@
 
     }
 
+    rect.value_label_whiteout {
+      
+      fill: #fff;
+    }
+
 
 
     text.title {

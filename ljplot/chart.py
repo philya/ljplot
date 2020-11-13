@@ -2,7 +2,7 @@
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
-from ljplot.svg import svg_text, svg_line, svg_polygon, svg_text, svg_polyline, svg_circle, svg_polyline_path
+from ljplot.svg import svg_text, svg_line, svg_polygon, svg_text, svg_polyline, svg_circle, svg_polyline_path, svg_rect
 
 from millify import millify
 
@@ -147,7 +147,11 @@ class Chart:
                 
                 elements.append(svg_circle(step_x, bottom - y, 4, color, color, "linechart_dot"))
 
+                font_height = 17
+
+                elements.append(svg_rect(step_x + self.value_label_x_offset - step_width * .7, bottom - y + self.value_label_y_offset - font_height + 2, step_width * .7, font_height, "value_label_whiteout"))
                 elements.append(svg_text(step_x + self.value_label_x_offset, bottom - y + self.value_label_y_offset, "value_label", self.value_label_format.format(value)))
+
 
 
         for i, lp in enumerate(line_points):
