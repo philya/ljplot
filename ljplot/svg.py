@@ -1,6 +1,36 @@
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
+def svg_polyline_path(points, stroke, clss, curve):
+    path_template = "<path class='{cls}' stroke='{stroke}' stroke-width='1' d='M {left_x},{left_y} C {left_xc},{left_y} {right_xc},{right_y}, {right_x},{right_y}' fill='{fill}'/>"
+
+    path_string = ""
+
+
+    for i in range(len(points) - 1):
+
+        left_x = points[i][0]
+        left_y = points[i][1]
+        right_x = points[i + 1][0]
+        right_y = points[i + 1][1]
+
+
+        path_string += path_template.format(
+            #width=row['width'],
+            stroke=stroke,
+            left_x=left_x,
+            left_y=left_y,
+            right_x=right_x,
+            right_y=right_y,
+            left_xc=left_x + curve,
+            right_xc=right_x - curve,
+            cls=clss,
+            fill="none",
+        )
+
+    return path_string
+
+
 def svg_polyline(points, stroke, clss, fill="none"):
 
     return '<polyline points="{}" fill="{}" stroke="{}" class="{}"/>'.format(

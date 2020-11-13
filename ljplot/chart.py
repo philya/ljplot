@@ -2,7 +2,7 @@
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
-from ljplot.svg import svg_text, svg_line, svg_polygon, svg_text, svg_polyline, svg_circle
+from ljplot.svg import svg_text, svg_line, svg_polygon, svg_text, svg_polyline, svg_circle, svg_polyline_path
 
 from millify import millify
 
@@ -31,7 +31,9 @@ class ChartSettings:
         colors=COLORS,
         template_loader=FileSystemLoader('templates'),
         xlabel_format="{:.0f}",
-        value_label_format="{:.1%}"
+        value_label_format="{:.1%}",
+        connect_shape="line", # line or path
+        path_curve=0.5,
     ):
 
         self.chart_width = chart_width
@@ -47,6 +49,8 @@ class ChartSettings:
 
         self.xlabel_format = xlabel_format
         self.value_label_format = value_label_format
+        self.connect_shape = connect_shape
+        self.path_curve = path_curve
 
 
 
@@ -148,7 +152,12 @@ class Chart:
 
         for i, lp in enumerate(line_points):
             color = self.colors[i]
-            elements.insert(0, svg_polyline(lp, color, "linechart_line"))
+            # if self.connect_shape == 'line':
+            #     elements.insert(0, svg_polyline(lp, color, "linechart_line"))
+            # elif self.connect_shape == 'path':
+            elements.insert(0, svg_polyline_path(lp, color, "linechart_line", step_width * self.path_curve))
+
+
 
 
         return self.template.render(width=self.chart_width, height=self.chart_height, elements=elements)
