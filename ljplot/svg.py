@@ -1,6 +1,26 @@
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
+def svg_polyline(points, stroke, clss, fill="none"):
+
+    return '<polyline points="{}" fill="{}" stroke="{}" class="{}"/>'.format(
+        ' '.join(['{},{}'.format(*p) for p in points]),
+        fill,
+        stroke,
+        clss
+    )
+
+def svg_circle(x, y, r, stroke, fill, clss):
+
+    return '<circle cx="{}" cy="{}" r="{}" stroke="{}" fill="{}" class="{}"/>'.format(
+        x,
+        y,
+        r,
+        stroke,
+        fill,
+        clss
+    )
+
 def svg_rect(x, y, width, height, clss):
     return '<rect x="{}" y="{}" width="{}" height="{}" class="{}"/>'.format(x, y, width, height, clss)
 

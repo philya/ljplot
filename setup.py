@@ -10,6 +10,7 @@ setup(name='ljplot',
       packages=['ljplot'],
       install_requires=[
           'pandas',
-          'Jinja2'
+          'Jinja2',
+          'millify'
       ],
       zip_safe=False)
