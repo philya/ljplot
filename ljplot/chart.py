@@ -41,6 +41,7 @@ class ChartSettings:
         path_curve=0.5,
 
         title_height = 38,
+        line_legend_x_padding=20,
 
 
     ):
@@ -67,6 +68,8 @@ class ChartSettings:
         self.padding_bottom = padding_bottom
         self.padding_left = padding_left
         self.padding_right = padding_right
+
+        self.line_legend_x_padding = line_legend_x_padding
 
 
 
@@ -113,7 +116,8 @@ class Chart:
     #     self.labels.append(name)
     #     elf.lines.append(values)
 
-    def add_data_frame(self, df):
+    def add_data_frame(self, df, line_legends=None):
+        self.line_legends = line_legends
         self.df = df
 
 
@@ -135,7 +139,10 @@ class Chart:
         steps = len(self.df)
         step_width = (right - left) / (steps - 1)
 
-        line_names = list(self.df.columns[1:])
+        if self.line_legends:
+            line_names = self.line_legends
+        else:
+            line_names = list(self.df.columns[1:])
         #line_names = self.labels
 
         max_value = max(self.df.iloc[:, 1:].max())
@@ -179,7 +186,9 @@ class Chart:
 
         if hasattr(self, "title"):
 
-            title_y = self.margin + (self.padding_top + self.title_height) / 2
+            #title_y = self.margin + (self.padding_top + self.title_height) / 2
+            #title_y = self.margin + self.padding_top / 2
+            title_y = self.margin
             elements.append(svg_text(self.margin, title_y, 'title', self.title))
         #elements.append(svg_text(margin, margin * 1.7 + title_height , 'subtitle', subtitle))
 
@@ -194,6 +203,8 @@ class Chart:
             #     elements.insert(0, svg_polyline(lp, color, "linechart_line"))
             # elif self.connect_shape == 'path':
             elements.insert(0, svg_polyline_path(lp, color, "linechart_line", step_width * self.path_curve))
+
+            elements.insert(0, svg_text(self.chart_width - self.margin - self.padding_right + self.line_legend_x_padding, lp[-1][1], "line_legend", line_names[i]))
 
             # Another way to smoothen the polyline:
             # https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74

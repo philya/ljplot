@@ -88,12 +88,20 @@
 
 
 
+    text.line_legend {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      fill: #111;
+      font-size: 18px;
+    }
+
     text.title {
       font-family: 'Open Sans', sans-serif;
       font-weight: 400;
       fill: #111;
       font-size: 38px;
       text-anchor: start;
+      alignment-baseline: hanging;
     }
 
     text.subtitle {
