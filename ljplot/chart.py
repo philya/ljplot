@@ -43,6 +43,9 @@ class ChartSettings:
         title_height = 38,
         line_legend_x_padding=20,
 
+        twitter=None,
+        signature=None,
+
 
     ):
 
@@ -70,6 +73,9 @@ class ChartSettings:
         self.padding_right = padding_right
 
         self.line_legend_x_padding = line_legend_x_padding
+
+        self.twitter = twitter
+        self.signature = signature
 
 
 
@@ -209,6 +215,34 @@ class Chart:
             # Another way to smoothen the polyline:
             # https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
 
+
+        if self.signature:
+
+            if type(self.signature) is list:
+                content = ""
+
+                for i, sline in enumerate(self.signature):
+                    content += "<tspan x='{}' dy='{:.1f}em'>{}</tspan>".format(left, i * 1.5, sline)
+
+            else:
+                content = self.signature
+            
+            elements.append(svg_text(left, self.chart_height - self.margin, 'signature', content))
+
+
+        # if logo_url:
+        #     elements.append("<image xlink:href='{src}' height='{lh}' width='{lw}' x='{x}' y='{y}' />".format(lh=logo_height, lw=logo_width, src=logo_url, x=chart_width - logo_width - margin, y=chart_height - logo_height - margin))
+
+        if self.twitter:
+            tm = self.margin
+            h = 22
+            elements.append(svg_text(self.chart_width - tm - h * 1.1, self.chart_height - tm, "twitter", "@" + self.twitter))
+            elements.append("<image xlink:href='{}' x='{}' y='{}' height='{}' class='twitter_logo'/>".format(
+                "https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg",
+                self.chart_width - tm - h,
+                self.chart_height - tm - h * .9,
+                h,
+            ))
 
 
 

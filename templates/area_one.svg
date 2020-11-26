@@ -93,13 +93,14 @@
       font-weight: 400;
       fill: #111;
       font-size: 18px;
+      alignment-baseline: middle;
     }
 
     text.title {
       font-family: 'Open Sans', sans-serif;
       font-weight: 400;
       fill: #111;
-      font-size: 38px;
+      font-size: 28px;
       text-anchor: start;
       alignment-baseline: hanging;
     }
@@ -112,14 +113,14 @@
       text-anchor: start;
     }
 
-    text.signature {
+    text.signature, .signature tspan {
       font-family: 'Open Sans', sans-serif;
       font-weight: 300;
       fill: #111;
 
       text-anchor: start;
       alignment-baseline: top;
-      font-size: 22px;
+      font-size: 16px;
     }
 
     text.twitter {
@@ -129,7 +130,7 @@
 
       text-anchor: end;
       alignment-baseline: top;
-      font-size: 22px;
+      font-size: 18px;
 
     }
 
