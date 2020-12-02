@@ -1,0 +1,164 @@
+<svg height="{{height}}" width="{{width}}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+  <style type='text/css'>
+    
+    
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400');
+
+
+
+    .linechart_line {
+      stroke-width: 5px;
+
+
+    }
+
+    .linechart_dot {
+    }
+
+
+    polygon {
+      opacity: .55;
+    }
+
+
+    rect.bar {
+      fill: url(#gradient_one);
+      opacity: 1;
+    }
+
+    rect.bar:Hover {
+      opacity: .55;
+    }
+
+
+    line.xtick {
+      stroke: #000;
+      stroke-width: 1px;
+      opacity: .8;    
+    }
+
+    line.ruler_line {
+      stroke: #000;
+      stroke-width: 1px;
+      opacity: .8;
+
+    }
+
+    circle.ruler_dot {
+      fill: #000;
+      stroke-width: 0;
+      opacity: .0;
+    }
+
+    text.ruler_label {
+      text-anchor: end;
+      alignment-baseline: bottom;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      fill: #000;
+      font-size: 18px;
+
+    }
+
+
+    text.xlabel {
+      text-anchor: middle;
+      alignment-baseline: central;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      fill: #111;
+      font-size: 18px;
+    }
+
+    text.value_label {
+      text-anchor: end;
+      alignment-baseline: bottom;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      fill: #111;
+      font-size: 18px;
+
+    }
+
+    rect.value_label_whiteout {
+      
+      fill: #fff;
+    }
+
+
+
+    text.line_legend {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      fill: #111;
+      font-size: 18px;
+      alignment-baseline: middle;
+    }
+
+    text.title {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      fill: #111;
+      font-size: 28px;
+      text-anchor: start;
+      alignment-baseline: hanging;
+    }
+
+    text.subtitle {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      fill: #111;
+      font-size: 22px;
+      text-anchor: start;
+    }
+
+    text.signature, .signature tspan {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      fill: #111;
+
+      text-anchor: start;
+      alignment-baseline: top;
+      font-size: 16px;
+    }
+
+    text.twitter {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      fill: #111;
+
+      text-anchor: end;
+      alignment-baseline: top;
+      font-size: 18px;
+
+    }
+
+    image.twitter_logo {
+      alignment-baseline: top;
+    }
+
+  </style>
+  
+    <linearGradient id="gradient_red_green" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
+      <stop offset="10%"   stop-color="#f9989f"/>
+      <stop offset="80%" stop-color="green"/>
+    </linearGradient>
+
+
+    <linearGradient id="gradient_one" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#ff8b6a" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#ff8b6a"/>
+    </linearGradient>
+
+
+  </defs>
+
+
+  {% block contents %}
+    {% for e in elements %}
+      {{ e}}
+    {% endfor %}
+  {% endblock %}
+
+</svg>

@@ -16,8 +16,6 @@ COLORS = [
     "#b2df8a",
 ]
 
-
-
 class ChartSettings:
 
     def __init__(self,
@@ -45,6 +43,8 @@ class ChartSettings:
 
         twitter=None,
         signature=None,
+
+        template_name="base_chart.svg",
 
 
     ):
@@ -77,6 +77,8 @@ class ChartSettings:
         self.twitter = twitter
         self.signature = signature
 
+        self.template_name = template_name
+
 
 
 class Chart:
@@ -92,11 +94,7 @@ class Chart:
 
 
         env = Environment(loader=self.template_loader)
-
-        self.template = env.get_template('area_one.svg')
-
-        self.labels = []
-        self.lines = []
+        self.template = env.get_template(self.template_name)
 
 
     def _init_padding(self):
@@ -111,35 +109,72 @@ class Chart:
         return getattr(self.s, name)
 
 
-    #def __setattr__(self, name, value):
-    #    if hasattr(self, name):
 
-    #    return getattr(self.s, name)
-
-
-
-    # def add_line(self, name, values):
-    #     self.labels.append(name)
-    #     elf.lines.append(values)
-
-    def add_data_frame(self, df, line_legends=None):
-        self.line_legends = line_legends
-        self.df = df
-
-
-    def get_svg(self):
-        pass
-
-
-    def line_chart(self,        
-        ):
-
-
+    def plot_svg(self):
 
         left = self.margin + self.padding_left
         right = self.chart_width - self.margin - self.padding_right
         top = self.margin + self.padding_top # + title_height
         bottom = self.chart_height - self.margin - self.padding_bottom #- footer_height - self.label_height 
+
+        elements = self.content_elements(left, right, top, bottom)
+
+        if hasattr(self, "title"):
+
+            #title_y = self.margin + (self.padding_top + self.title_height) / 2
+            #title_y = self.margin + self.padding_top / 2
+            title_y = self.margin
+            elements.append(svg_text(self.margin, title_y, 'title', self.title))
+        #elements.append(svg_text(margin, margin * 1.7 + title_height , 'subtitle', subtitle))
+
+
+        if self.signature:
+
+            if type(self.signature) is list:
+                content = ""
+
+                for i, sline in enumerate(self.signature):
+                    content += "<tspan x='{}' dy='{:.1f}em'>{}</tspan>".format(left, i * 1.5, sline)
+
+            else:
+                content = self.signature
+            
+            elements.append(svg_text(left, self.chart_height - self.margin, 'signature', content))
+
+        # if logo_url:
+        #     elements.append("<image xlink:href='{src}' height='{lh}' width='{lw}' x='{x}' y='{y}' />".format(lh=logo_height, lw=logo_width, src=logo_url, x=chart_width - logo_width - margin, y=chart_height - logo_height - margin))
+
+        if self.twitter:
+            tm = self.margin
+            h = 22
+            elements.append(svg_text(self.chart_width - tm - h * 1.1, self.chart_height - tm, "twitter", "@" + self.twitter))
+            elements.append("<image xlink:href='{}' x='{}' y='{}' height='{}' class='twitter_logo'/>".format(
+                "https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg",
+                self.chart_width - tm - h,
+                self.chart_height - tm - h * .9,
+                h,
+            ))
+
+
+        return self.template.render(width=self.chart_width, height=self.chart_height, elements=elements)
+
+class LineChart(Chart):
+
+    def __init__(self, chart_settings, **kwargs):
+
+        super().__init__(chart_settings, **kwargs)
+
+        self.labels = []
+        self.lines = []
+
+    def set_data(self, df, line_legends=None):
+        self.line_legends = line_legends
+        self.df = df
+
+
+    def content_elements(self, left, right, top, bottom):
+
+        elements = []
 
 
         steps = len(self.df)
@@ -159,8 +194,6 @@ class Chart:
 
         plot_area_height = bottom - top
         value_range = max_value - min_value
-
-        elements = []
 
         line_points = [[] for x in range(len(line_names))]
 
@@ -189,19 +222,7 @@ class Chart:
                 elements.append(svg_rect(step_x + self.value_label_x_offset - step_width * .7, bottom - y + self.value_label_y_offset - font_height + 2, step_width * .7, font_height, "value_label_whiteout"))
                 elements.append(svg_text(step_x + self.value_label_x_offset, bottom - y + self.value_label_y_offset, "value_label", self.value_label_format.format(value)))
 
-
-        if hasattr(self, "title"):
-
-            #title_y = self.margin + (self.padding_top + self.title_height) / 2
-            #title_y = self.margin + self.padding_top / 2
-            title_y = self.margin
-            elements.append(svg_text(self.margin, title_y, 'title', self.title))
-        #elements.append(svg_text(margin, margin * 1.7 + title_height , 'subtitle', subtitle))
-
         #elements.append(svg_text(margin, chart_height - margin, 'signature', signature))
-
-
-
 
         for i, lp in enumerate(line_points):
             color = self.colors[i]
@@ -215,36 +236,5 @@ class Chart:
             # Another way to smoothen the polyline:
             # https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
 
-
-        if self.signature:
-
-            if type(self.signature) is list:
-                content = ""
-
-                for i, sline in enumerate(self.signature):
-                    content += "<tspan x='{}' dy='{:.1f}em'>{}</tspan>".format(left, i * 1.5, sline)
-
-            else:
-                content = self.signature
-            
-            elements.append(svg_text(left, self.chart_height - self.margin, 'signature', content))
-
-
-        # if logo_url:
-        #     elements.append("<image xlink:href='{src}' height='{lh}' width='{lw}' x='{x}' y='{y}' />".format(lh=logo_height, lw=logo_width, src=logo_url, x=chart_width - logo_width - margin, y=chart_height - logo_height - margin))
-
-        if self.twitter:
-            tm = self.margin
-            h = 22
-            elements.append(svg_text(self.chart_width - tm - h * 1.1, self.chart_height - tm, "twitter", "@" + self.twitter))
-            elements.append("<image xlink:href='{}' x='{}' y='{}' height='{}' class='twitter_logo'/>".format(
-                "https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg",
-                self.chart_width - tm - h,
-                self.chart_height - tm - h * .9,
-                h,
-            ))
-
-
-
-        return self.template.render(width=self.chart_width, height=self.chart_height, elements=elements)
+        return elements
 
