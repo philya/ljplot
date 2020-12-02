@@ -3,7 +3,9 @@
   <style type='text/css'>
     
     
-    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400');
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,800');
+
+
 
 
 
@@ -81,6 +83,12 @@
 
     }
 
+    text.white_shadow {
+      fill: #fff;
+      font-weight: 800;
+      
+    }
+
     rect.value_label_whiteout {
       
       fill: #fff;
@@ -96,6 +104,16 @@
       alignment-baseline: middle;
     }
 
+    text.line_label {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      fill: #fff;
+      font-size: 18px;
+      alignment-baseline: middle;
+      text-anchor: end;
+    }
+
+
     text.title {
       font-family: 'Open Sans', sans-serif;
       font-weight: 400;
@@ -107,9 +125,9 @@
 
     text.subtitle {
       font-family: 'Open Sans', sans-serif;
-      font-weight: 300;
+      font-weight: 400;
       fill: #111;
-      font-size: 22px;
+      font-size: 18px;
       text-anchor: start;
     }
 

@@ -34,7 +34,8 @@ class ChartSettings:
         colors=COLORS,
         template_loader=FileSystemLoader('templates'),
         xlabel_format="{:.0f}",
-        value_label_format="{:.1%}",
+        value_label_format="{:,.0f}",
+        #value_label_format="{:.1%}",
         connect_shape="line", # line or path
         path_curve=0.5,
 
@@ -45,6 +46,12 @@ class ChartSettings:
         signature=None,
 
         template_name="base_chart.svg",
+
+
+        # Stacked line properties
+        line_legend_y_shift=0,
+        line_label_x_padding=20,
+        
 
 
     ):
@@ -78,6 +85,13 @@ class ChartSettings:
         self.signature = signature
 
         self.template_name = template_name
+
+
+        self.line_legend_y_shift = line_legend_y_shift
+        self.line_label_x_padding = line_label_x_padding
+
+
+        
 
 
 
@@ -125,7 +139,9 @@ class Chart:
             #title_y = self.margin + self.padding_top / 2
             title_y = self.margin
             elements.append(svg_text(self.margin, title_y, 'title', self.title))
-        #elements.append(svg_text(margin, margin * 1.7 + title_height , 'subtitle', subtitle))
+        
+        if hasattr(self, "subtitle"):
+            elements.append(svg_text(self.margin, title_y + 60 , 'subtitle', self.subtitle))
 
 
         if self.signature:
@@ -197,6 +213,8 @@ class LineChart(Chart):
 
         line_points = [[] for x in range(len(line_names))]
 
+        label_elements = []
+
         for j in range(len(self.df)):
             row = self.df.iloc[j]
 
@@ -219,8 +237,17 @@ class LineChart(Chart):
 
                 font_height = 17
 
-                elements.append(svg_rect(step_x + self.value_label_x_offset - step_width * .7, bottom - y + self.value_label_y_offset - font_height + 2, step_width * .7, font_height, "value_label_whiteout"))
-                elements.append(svg_text(step_x + self.value_label_x_offset, bottom - y + self.value_label_y_offset, "value_label", self.value_label_format.format(value)))
+                #elements.append(svg_rect(step_x + self.value_label_x_offset - step_width * .7, bottom - y + self.value_label_y_offset - font_height + 2, step_width * .7, font_height, "value_label_whiteout"))
+                label_elements.append(svg_text(step_x + self.value_label_x_offset, bottom - y + self.value_label_y_offset, "value_label white_shadow", self.value_label_format.format(value)))
+                label_elements.append(svg_text(step_x + self.value_label_x_offset +1, bottom - y + self.value_label_y_offset, "value_label white_shadow", self.value_label_format.format(value)))
+                label_elements.append(svg_text(step_x + self.value_label_x_offset -1, bottom - y + self.value_label_y_offset, "value_label white_shadow", self.value_label_format.format(value)))
+                label_elements.append(svg_text(step_x + self.value_label_x_offset, 1 + bottom - y + self.value_label_y_offset, "value_label white_shadow", self.value_label_format.format(value)))
+                label_elements.append(svg_text(step_x + self.value_label_x_offset, -1 + bottom - y + self.value_label_y_offset, "value_label white_shadow", self.value_label_format.format(value)))
+
+                label_elements.append(svg_text(step_x + self.value_label_x_offset, bottom - y + self.value_label_y_offset, "value_label", self.value_label_format.format(value)))
+                
+
+        elements = elements + label_elements
 
         #elements.append(svg_text(margin, chart_height - margin, 'signature', signature))
 
@@ -231,10 +258,117 @@ class LineChart(Chart):
             # elif self.connect_shape == 'path':
             elements.insert(0, svg_polyline_path(lp, color, "linechart_line", step_width * self.path_curve))
 
+
+
             elements.insert(0, svg_text(self.chart_width - self.margin - self.padding_right + self.line_legend_x_padding, lp[-1][1], "line_legend", line_names[i]))
 
             # Another way to smoothen the polyline:
             # https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
 
         return elements
+
+
+class StackedLineChart(Chart):
+
+
+    def __init__(self, chart_settings, **kwargs):
+
+        super().__init__(chart_settings, **kwargs)
+
+        self.labels = []
+        self.lines = []
+
+    def set_data(self, df, line_legends=None, line_labels=None):
+        self.line_legends = line_legends
+        self.line_labels = line_labels
+        self.df = df
+
+
+    def content_elements(self, left, right, top, bottom):
+
+        elements = []
+
+
+        steps = len(self.df)
+        step_width = (right - left) / (steps - 1)
+
+        if self.line_legends:
+            line_names = self.line_legends
+        else:
+            line_names = list(self.df.columns[1:])
+        #line_names = self.labels
+
+        max_value = self.df.iloc[:, 1:].sum(axis=1).max()
+
+        min_value = 0
+
+        # if self.force_min_value is not None:
+        #     min_value = self.force_min_value
+        # else:
+        #     min_value = min(self.df.iloc[:, 1:].min())
+
+        plot_area_height = bottom - top
+        value_range = max_value - min_value
+
+        line_points = [[] for x in range(len(line_names))]
+
+        for j in range(len(self.df)):
+            row = self.df.iloc[j]
+
+            step_x = left + step_width * j
+
+            elements.append(svg_text(step_x, self.margin/5 + bottom + self.label_height / 2.0, "xlabel", self.xlabel_format.format(row[0])))
+
+            elements.append(svg_line(step_x, self.margin/5 + bottom, step_x, self.margin/5 + bottom + 5, 'xtick'))
+
+            step_y = 0
+
+            for i, line_name in enumerate(line_names):
+                #color = self.colors[i]
+
+                value = step_y + row[i + 1]
+
+                y = plot_area_height * (value - min_value) / value_range
+
+                line_points[i].append((step_x, bottom - y))
+
+                step_y = value
+                
+                #elements.append(svg_circle(step_x, bottom - y, 4, color, color, "linechart_dot"))
+
+                #font_height = 17
+
+                #elements.append(svg_rect(step_x + self.value_label_x_offset - step_width * .7, bottom - y + self.value_label_y_offset - font_height + 2, step_width * .7, font_height, "value_label_whiteout"))
+                #elements.append(svg_text(step_x + self.value_label_x_offset, bottom - y + self.value_label_y_offset, "value_label", self.value_label_format.format(value)))
+
+        #elements.append(svg_text(margin, chart_height - margin, 'signature', signature))
+
+        prev_rightmost_y = bottom
+
+        for i, lp in enumerate(line_points):
+            color = self.colors[i]
+            # if self.connect_shape == 'line':
+            #     elements.insert(0, svg_polyline(lp, color, "linechart_line"))
+            # elif self.connect_shape == 'path':
+            #elements.insert(0, svg_polyline_path(lp, color, "linechart_line", step_width * self.path_curve))
+
+            area_polygon = [(right, bottom), (left, bottom)] + lp
+
+            elements.insert(0, svg_polygon(area_polygon, color, "none", ""))
+
+
+            line_legend_y = (prev_rightmost_y + lp[-1][1]) / 2 + self.line_legend_y_shift
+            elements.insert(0, svg_text(self.chart_width - self.margin - self.padding_right + self.line_legend_x_padding, line_legend_y, "line_legend", line_names[i]))
+            if self.line_labels:
+                #elements.append(svg_text(self.chart_width - self.margin - self.padding_right - 10, line_legend_y, "line_label line_label_dark", self.line_labels[i]))
+                elements.append(svg_text(self.chart_width - self.margin - self.padding_right - self.line_label_x_padding, line_legend_y, "line_label", self.line_labels[i]))
+
+
+            prev_rightmost_y = lp[-1][1]
+
+            # Another way to smoothen the polyline:
+            # https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
+
+        return elements
+
 
