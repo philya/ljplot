@@ -20,7 +20,7 @@
 
 
     polygon {
-      opacity: .55;
+      opacity: 1;
     }
 
 

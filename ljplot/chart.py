@@ -346,6 +346,7 @@ class StackedLineChart(Chart):
         prev_rightmost_y = bottom
 
         for i, lp in enumerate(line_points):
+            
             color = self.colors[i]
             # if self.connect_shape == 'line':
             #     elements.insert(0, svg_polyline(lp, color, "linechart_line"))
