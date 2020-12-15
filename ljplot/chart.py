@@ -138,10 +138,10 @@ class Chart:
             #title_y = self.margin + (self.padding_top + self.title_height) / 2
             #title_y = self.margin + self.padding_top / 2
             title_y = self.margin
-            elements.append(svg_text(self.margin, title_y, 'title', self.title))
+            elements.append(svg_text(left, title_y, 'title', self.title))
         
         if hasattr(self, "subtitle"):
-            elements.append(svg_text(self.margin, title_y + 60 , 'subtitle', self.subtitle))
+            elements.append(svg_text(left, title_y + 60 , 'subtitle', self.subtitle))
 
 
         if self.signature:
@@ -260,7 +260,8 @@ class LineChart(Chart):
 
 
 
-            elements.insert(0, svg_text(self.chart_width - self.margin - self.padding_right + self.line_legend_x_padding, lp[-1][1], "line_legend", line_names[i]))
+            if self.line_legends:
+                elements.insert(0, svg_text(self.chart_width - self.margin - self.padding_right + self.line_legend_x_padding, lp[-1][1], "line_legend", line_names[i]))
 
             # Another way to smoothen the polyline:
             # https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
